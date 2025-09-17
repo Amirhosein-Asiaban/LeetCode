@@ -5,11 +5,12 @@
 Given an integer x, return true if x is a palindrome, and false otherwise.
 
 ## Approach
-1. Handle negative numbers (they can't be palindromes).
-2. reverse the number mathematically and compare with original.
+1. Handle negative numbers and numbers ending with 0 (except 0).
+2. Reverse only half of the number and compare with the other half.
+3. This avoids integer overflow and is more efficient.
 
 ## Complexity
-- Time: O(n) 
+- Time: O(log₁₀(n)) - where n is the number of digits
 - Space: O(1) 
 
 ## LeetCode Link
@@ -28,19 +29,22 @@ Output: false
 
 
 def isPalindrome(x):
+    
+    # Negative numbers are not palindromes
     if x < 0:
         return False
-    if x < 10:
-        return True
-    if x % 10 == 0:  # Numbers ending with 0 (except 0) can't be palindromes
+    
+    # Numbers ending with 0 (except 0) can't be palindromes
+    if x % 10 == 0 and x != 0:
         return False
     
-    original = x
-    reversed_num = 0
+    reversed_half = 0
     
-    while x > 0:
-        digit = x % 10
-        reversed_num = reversed_num * 10 + digit
-        x = x // 10
+    # Reverse only half of the number
+    while x > reversed_half:
+        reversed_half = reversed_half * 10 + x % 10
+        x //= 10
     
-    return original == reversed_num
+    # For even digits: x == reversed_half
+    # For odd digits: x == reversed_half // 10
+    return x == reversed_half or x == reversed_half // 10
